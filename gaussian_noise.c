@@ -23,7 +23,6 @@ void integer_to_string(char ii[],int num)  //Converts integer to a string
 		a=num%10;
 		num=num/10;
 		ch=a+48;
-//		printf("%c",ch);
 		ii[i]=ch;
 		i++;
 	}
@@ -39,7 +38,6 @@ void integer_to_string(char ii[],int num)  //Converts integer to a string
 		ii[i]=jj[i];
 	}
 	ii[i]='\0';
-//	printf("%s\n",ii);
 }
 
 struct timespec diff(struct timespec start, struct timespec end){  //Used to calculate the time taken to implement algorithm
@@ -168,8 +166,6 @@ void writePPMGS(const char *filename, PPMImageGS *img) //Write a ppm image to a 
     //image format
     fprintf(fp, "P5\n");
 
-
-
     //image size
     fprintf(fp, "%d %d\n",img->x,img->y);
 
@@ -272,9 +268,6 @@ void writePPM(const char *filename, PPMImage *img) //Write ppm image to file.
     //image format
     fprintf(fp, "P6\n");
 
-    //comments
-
-
     //image size
     fprintf(fp, "%d %d\n",img->x,img->y);
 
@@ -298,7 +291,6 @@ int main(int argc, char* argv[]) {
     }
 
     int N = atoi(argv[1]);                  /* size of input array */
-//    int p = atoi(argv[2]);                  /* number of processors*/
     char *problem_name = "image_warping";
     char *approach_name = "data_division";
 
@@ -306,19 +298,13 @@ int main(int argc, char* argv[]) {
     char outputFileName[100];
     sprintf(outputFileName, "output/%s_%s_%s_output.txt", problem_name, approach_name, argv[1]);
 
-//    int number_of_threads = p;
-//    omp_set_num_threads(1);
     char filename[1024];
     filename[0] ='\0';
-//    strcat(filename,"new_image");
     strcat(filename, argv[1]);
     strcat(filename, "_greyscaled.ppm");
     PPMImageGS *image;
-//    image = (PPMImage *) malloc(sizeof(PPMImage));
 	image = readPPMGS(filename);
-//	free(image);
     clock_gettime(CLK, &start_alg);                 /* Start the algo timer */
-   // PPMImageGS* x;// = change_image_warping(image);
     //----------------------------------------Algorithm Here------------------------------------------
 	
 	int no_of_images=1;	
@@ -333,16 +319,11 @@ int main(int argc, char* argv[]) {
 		im2->x=no_of_rows;
 		im2->y=no_of_columns;
 		im2->data = (PPMPixelGS *) malloc(no_of_rows*no_of_columns*sizeof(PPMPixelGS));
-		//omp_set_num_threads(p);
-		//#pragma omp parallel for private(i,j,idx)
-		//	unsigned char img_values[no_of_rows*no_of_columns];
+
 		srand(time(0));
 		for(j=0;j<cols;j++)
 		{	
-		//	idx=no_of_rows*i+j;
-		//	srand(time(0));
 			double yy1=(double)rand()/(RAND_MAX);
-		//	srand(time(0));
 			double yy2=(double)rand()/(RAND_MAX);
 			double res=sqrt(-2*log(yy1))*cos(yy2);
 			double sign=(double)rand()/(RAND_MAX);
@@ -350,13 +331,7 @@ int main(int argc, char* argv[]) {
 			{
 				res=-res;
 			}
-		//	printf("%f %f %f",res,yy1,yy2);
 			im2->data[j].gs=image->data[j].gs+(2*res);
-		//	printf("%d ",image->data[j].red);
-		//	printf("%d ",image->data[j].green);
-		//	printf("%d ",image->data[j].blue);
-		//	printf("\n");
-//		}
 		}
 	
     	//-----------------------------------------------------------------------------------------
@@ -381,7 +356,6 @@ int main(int argc, char* argv[]) {
 	fprintf(fpsssss,"%d,0,%f\n",N,(double)alg.tv_sec+(double)alg.tv_nsec/1000000000);
 	fclose(fpsssss);
   
-//    outputFile = fopen(outputFileName,"w");
     printf("%s,%s,%ld,%ld,%ld,%ld\n", problem_name, approach_name,e2e.tv_sec, e2e.tv_nsec, alg.tv_sec, alg.tv_nsec);
 	return 0;
 }
