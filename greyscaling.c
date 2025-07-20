@@ -7,7 +7,10 @@
 
 #define CLK CLOCK_MONOTONIC
 
-void integer_to_string(char ii[],int num)  //Converts integer to a string
+/**
+ * This function converts an integer into a string value.
+ */
+void integer_to_string(char ii[],int num)
 {
 	int a;
 	int i=0;
@@ -23,7 +26,6 @@ void integer_to_string(char ii[],int num)  //Converts integer to a string
 		a=num%10;
 		num=num/10;
 		ch=a+48;
-//		printf("%c",ch);
 		ii[i]=ch;
 		i++;
 	}
@@ -39,9 +41,12 @@ void integer_to_string(char ii[],int num)  //Converts integer to a string
 		ii[i]=jj[i];
 	}
 	ii[i]='\0';
-//	printf("%s\n",ii);
 }
 
+/**
+ * This function calculates the difference between two timespec structures.
+ * It is used to calculate the time taken to implement the algorithm.
+ */
 struct timespec diff(struct timespec start, struct timespec end){  //Used to calculate the time taken to implement algorithm
     struct timespec temp;
     if((end.tv_nsec-start.tv_nsec)<0){
@@ -78,7 +83,10 @@ typedef struct {
 
 #define RGB_COMPONENT_COLOR 255
 
-static PPMImageGS *readPPMGS(const char *filename) //read the ppm image from the file
+/**
+ * This function is used to read a greyscaled PPM image from a file.
+ */
+static PPMImageGS *readPPMGS(const char *filename) 
 {
     char buff[16];
     PPMImageGS *img;
@@ -154,7 +162,10 @@ static PPMImageGS *readPPMGS(const char *filename) //read the ppm image from the
     return img;
 }
 
-void writePPMGS(const char *filename, PPMImageGS *img) //Write a ppm image to a file
+/**
+ * Write a greyscaled PPM image into a file.
+ */
+void writePPMGS(const char *filename, PPMImageGS *img)
 {
     FILE *fp;
     //open file for output
@@ -168,8 +179,6 @@ void writePPMGS(const char *filename, PPMImageGS *img) //Write a ppm image to a 
     //image format
     fprintf(fp, "P5\n");
 
-
-
     //image size
     fprintf(fp, "%d %d\n",img->x,img->y);
 
@@ -181,8 +190,10 @@ void writePPMGS(const char *filename, PPMImageGS *img) //Write a ppm image to a 
     fclose(fp);
 }
 
-
-static PPMImage *readPPM(const char *filename) //read the ppm image from the file
+/**
+ * Reads a colored PPM image from a file.
+ */
+static PPMImage *readPPM(const char *filename)
 {
     char buff[16];
     PPMImage *img;
@@ -258,7 +269,10 @@ static PPMImage *readPPM(const char *filename) //read the ppm image from the fil
     return img;
 }
 
-void writePPM(const char *filename, PPMImage *img) //Write ppm image to file.
+/**
+ * Write a colored PPM image into a file.
+ */
+void writePPM(const char *filename, PPMImage *img)
 {
     FILE *fp;
     //open file for output
@@ -285,6 +299,10 @@ void writePPM(const char *filename, PPMImage *img) //Write ppm image to file.
     fwrite(img->data, 3 * img->x, img->y, fp);
     fclose(fp);
 }
+
+/**
+ * Save this method for future purposes.
+ */
 void convolution_operation(int no_of_rows,int no_of_columns,double image[no_of_rows][no_of_columns],double filter[3][3],double result[no_of_rows][no_of_columns])
 {
 	int i,j;
@@ -329,6 +347,7 @@ void convolution_operation(int no_of_rows,int no_of_columns,double image[no_of_r
 		}
 	}
 }
+
 int main(int argc, char* argv[]) {
 
     struct timespec start_e2e, end_e2e, start_alg, end_alg, e2e, alg;
@@ -341,7 +360,6 @@ int main(int argc, char* argv[]) {
     }
 
     int N = atoi(argv[1]);                  /* size of input array */
-//    int p = atoi(argv[2]);                  /* number of processors*/
     char *problem_name = "image_warping";
     char *approach_name = "data_division";
 
@@ -349,20 +367,14 @@ int main(int argc, char* argv[]) {
     char outputFileName[100];
     sprintf(outputFileName, "output/%s_%s_%s_output.txt", problem_name, approach_name, argv[1]);
 
-//    int number_of_threads = p;
-//    omp_set_num_threads(1);
     char filename[1024];
     filename[0] ='\0';
     strcat(filename,"image");
     strcat(filename, argv[1]);
     strcat(filename, ".ppm");
     PPMImage *image;
-//    image = (PPMImage *) malloc(sizeof(PPMImage));
 	image = readPPM(filename);
-//	free(image);
-    clock_gettime(CLK, &start_alg);                 /* Start the algo timer */
-   // PPMImageGS* x;// = change_image_warping(image);
-    //----------------------------------------Algorithm Here------------------------------------------
+    clock_gettime(CLK, &start_alg);
 
 	PPMImageGS *gs=(PPMImageGS*)malloc(sizeof(PPMImageGS));
 	int no_of_images=1;	
@@ -383,19 +395,15 @@ int main(int argc, char* argv[]) {
 			}
 		}
 	
-    	//-----------------------------------------------------------------------------------------
-    	 /* End the algo timer */
-    	char outputfilename[1024];
-    	outputfilename[0] ='\0';
+	    char outputfilename[1024];
+	    outputfilename[0] ='\0';
     	int imno=atoi(argv[1]);
     	int ino=i+no_of_images*imno-(no_of_images-1);
     	char number[25];
     	integer_to_string(number,ino);
     	strcat(outputfilename, number);
     	strcat(outputfilename, "_greyscaled.ppm");
-//    	strcat(outputfilename, ".ppm");
 	  	writePPMGS(outputfilename,gs);
-//		writePPMGS("gss.ppm",gs);
 	}
 	clock_gettime(CLK, &end_alg);
     clock_gettime(CLK, &end_e2e);
@@ -406,7 +414,6 @@ int main(int argc, char* argv[]) {
 	fprintf(fpsssss,"%d,0,%f\n",N,(double)alg.tv_sec+(double)alg.tv_nsec/1000000000);
 	fclose(fpsssss);
   
-//    outputFile = fopen(outputFileName,"w");
     printf("%s,%s,%ld,%ld,%ld,%ld\n", problem_name, approach_name,e2e.tv_sec, e2e.tv_nsec, alg.tv_sec, alg.tv_nsec);
 	return 0;
 }
